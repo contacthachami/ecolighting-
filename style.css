@@ -1,0 +1,661 @@
+/* 
+* Ecolighting Social Media Hub
+* Optimized for QR Code scanning - Mobile & Desktop friendly
+*/
+
+/* ===== CSS VARIABLES - Based on Logo Color Palette ===== */
+:root {
+  /* Primary Colors from Logo */
+  --primary-green: #0a6b3c;
+  --secondary-green: #108e51;
+  --light-green: #e0f5e9;
+  --accent-green: #34a853;
+
+  /* Accent Colors from Logo */
+  --primary-yellow: #ffcc00;
+  --secondary-yellow: #ffe066;
+  --light-yellow: #fff9e6;
+
+  /* Neutral Colors */
+  --white: #ffffff;
+  --light-bg: #f8faf9;
+  --medium-gray: #e0e0e0;
+  --dark-gray: #555555;
+  --text-dark: #2c3e50;
+
+  /* Social Media Brand Colors */
+  --instagram-gradient: linear-gradient(
+    45deg,
+    #f09433 0%,
+    #e6683c 25%,
+    #dc2743 50%,
+    #cc2366 75%,
+    #bc1888 100%
+  );
+  --facebook-blue: #1877f2;
+  --email-red: #ea4335;
+  --phone-green: #34a853;
+  --website-blue: #4285f4;
+
+  /* Spacing */
+  --spacing-xs: 0.5rem;
+  --spacing-sm: 1rem;
+  --spacing-md: 1.5rem;
+  --spacing-lg: 2rem;
+  --spacing-xl: 3rem;
+
+  /* Border Radius */
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 20px;
+  --radius-xl: 24px;
+
+  /* Shadows */
+  --shadow-sm: 0 2px 8px rgba(10, 107, 60, 0.08);
+  --shadow-md: 0 4px 16px rgba(10, 107, 60, 0.12);
+  --shadow-lg: 0 8px 24px rgba(10, 107, 60, 0.16);
+  --shadow-hover: 0 12px 32px rgba(10, 107, 60, 0.2);
+
+  /* Transitions */
+  --transition-fast: 0.2s ease;
+  --transition-medium: 0.3s ease;
+  --transition-slow: 0.5s ease;
+}
+
+/* ===== GLOBAL RESET ===== */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  font-family: "Poppins", sans-serif;
+  background: linear-gradient(
+    135deg,
+    var(--light-bg) 0%,
+    var(--light-green) 100%
+  );
+  color: var(--text-dark);
+  line-height: 1.6;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* ===== LOADER ANIMATION ===== */
+.loader-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  background: linear-gradient(
+    135deg,
+    var(--primary-green) 0%,
+    var(--secondary-green) 100%
+  );
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+  opacity: 1;
+  transition:
+    opacity 0.5s ease,
+    visibility 0.5s ease;
+}
+
+.loader-container.fade-out {
+  opacity: 0;
+  visibility: hidden;
+}
+
+.loader-content {
+  text-align: center;
+  animation: fadeInUp 0.8s ease;
+}
+
+.logo-container {
+  position: relative;
+  width: 120px;
+  height: 120px;
+  margin: 0 auto var(--spacing-lg);
+}
+
+.loader-logo {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  animation: logoFloat 2s ease-in-out infinite;
+  filter: drop-shadow(0 4px 16px rgba(255, 255, 255, 0.3));
+}
+
+.pulse-ring {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 140px;
+  height: 140px;
+  border: 3px solid rgba(255, 204, 0, 0.5);
+  border-radius: 50%;
+  animation: pulse 2s ease-out infinite;
+}
+
+.loader-text h2 {
+  color: var(--white);
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: var(--spacing-xs);
+  letter-spacing: 1px;
+}
+
+.loader-text p {
+  color: var(--light-yellow);
+  font-size: 1rem;
+  font-weight: 300;
+  margin-bottom: var(--spacing-lg);
+}
+
+.loading-bar {
+  width: 200px;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 10px;
+  margin: 0 auto;
+  overflow: hidden;
+}
+
+.loading-progress {
+  width: 0;
+  height: 100%;
+  background: var(--primary-yellow);
+  border-radius: 10px;
+  animation: loadingProgress 2s ease-in-out forwards;
+  box-shadow: 0 0 10px var(--primary-yellow);
+}
+
+/* ===== MAIN CONTENT ===== */
+.main-content {
+  opacity: 0;
+  visibility: hidden;
+  transition:
+    opacity 0.5s ease 0.3s,
+    visibility 0.5s ease 0.3s;
+}
+
+.main-content.show {
+  opacity: 1;
+  visibility: visible;
+}
+
+.container {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: var(--spacing-lg) var(--spacing-md);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ===== HEADER ===== */
+.header {
+  text-align: center;
+  padding: var(--spacing-lg) 0;
+  animation: fadeInDown 0.6s ease;
+}
+
+.logo-wrapper {
+  width: 100px;
+  height: 100px;
+  margin: 0 auto var(--spacing-md);
+  background: var(--white);
+  border-radius: 50%;
+  padding: var(--spacing-sm);
+  box-shadow: var(--shadow-md);
+  transition: transform var(--transition-medium);
+}
+
+.logo-wrapper:hover {
+  transform: scale(1.05) rotate(5deg);
+}
+
+.main-logo {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.brand-name {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: var(--primary-green);
+  margin-bottom: var(--spacing-xs);
+  letter-spacing: -0.5px;
+}
+
+.tagline {
+  font-size: 1rem;
+  color: var(--dark-gray);
+  font-weight: 400;
+}
+
+/* ===== SOCIAL LINKS SECTION ===== */
+.social-links {
+  flex: 1;
+  padding: var(--spacing-md) 0;
+  animation: fadeInUp 0.8s ease;
+}
+
+.section-title {
+  text-align: center;
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--primary-green);
+  margin-bottom: var(--spacing-lg);
+  position: relative;
+}
+
+.section-title::after {
+  content: "";
+  position: absolute;
+  bottom: -8px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60px;
+  height: 3px;
+  background: linear-gradient(
+    90deg,
+    var(--primary-yellow),
+    var(--secondary-yellow)
+  );
+  border-radius: 10px;
+}
+
+/* ===== SOCIAL CARDS ===== */
+.social-card {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+  background: var(--white);
+  padding: var(--spacing-md);
+  margin-bottom: var(--spacing-md);
+  border-radius: var(--radius-md);
+  text-decoration: none;
+  color: var(--text-dark);
+  box-shadow: var(--shadow-sm);
+  transition: all var(--transition-medium);
+  position: relative;
+  overflow: hidden;
+}
+
+.social-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 4px;
+  height: 100%;
+  transition: width var(--transition-fast);
+}
+
+.social-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-hover);
+}
+
+.social-card:active {
+  transform: translateY(-2px);
+}
+
+/* Social Icon */
+.social-icon {
+  width: 50px;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-sm);
+  font-size: 1.5rem;
+  color: var(--white);
+  flex-shrink: 0;
+  transition: transform var(--transition-fast);
+}
+
+.social-card:hover .social-icon {
+  transform: scale(1.1) rotate(5deg);
+}
+
+/* Social Info */
+.social-info {
+  flex: 1;
+}
+
+.social-info h3 {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-bottom: 2px;
+  color: var(--text-dark);
+}
+
+.social-info p {
+  font-size: 0.9rem;
+  color: var(--dark-gray);
+  font-weight: 400;
+}
+
+/* Arrow Icon */
+.arrow {
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--dark-gray);
+  font-size: 1rem;
+  transition: transform var(--transition-fast);
+}
+
+.social-card:hover .arrow {
+  transform: translateX(5px);
+}
+
+/* ===== INDIVIDUAL SOCIAL CARD STYLES ===== */
+/* Instagram */
+.social-card.instagram::before {
+  background: var(--instagram-gradient);
+}
+
+.social-card.instagram .social-icon {
+  background: var(--instagram-gradient);
+}
+
+.social-card.instagram:hover {
+  border-color: #e1306c;
+}
+
+/* Facebook */
+.social-card.facebook::before {
+  background: var(--facebook-blue);
+}
+
+.social-card.facebook .social-icon {
+  background: var(--facebook-blue);
+}
+
+.social-card.facebook:hover {
+  border-color: var(--facebook-blue);
+}
+
+/* Website */
+.social-card.website::before {
+  background: linear-gradient(
+    135deg,
+    var(--primary-green),
+    var(--accent-green)
+  );
+}
+
+.social-card.website .social-icon {
+  background: linear-gradient(
+    135deg,
+    var(--primary-green),
+    var(--accent-green)
+  );
+}
+
+.social-card.website:hover {
+  border-color: var(--primary-green);
+}
+
+/* Email */
+.social-card.email::before {
+  background: var(--email-red);
+}
+
+.social-card.email .social-icon {
+  background: var(--email-red);
+}
+
+.social-card.email:hover {
+  border-color: var(--email-red);
+}
+
+/* Phone */
+.social-card.phone::before {
+  background: var(--phone-green);
+}
+
+.social-card.phone .social-icon {
+  background: var(--phone-green);
+}
+
+.social-card.phone:hover {
+  border-color: var(--phone-green);
+}
+
+/* ===== FOOTER ===== */
+.footer {
+  padding: var(--spacing-lg) 0 var(--spacing-md);
+  text-align: center;
+  animation: fadeInUp 1s ease;
+}
+
+.footer-content {
+  border-top: 1px solid var(--medium-gray);
+  padding-top: var(--spacing-md);
+}
+
+.footer-text {
+  font-size: 1rem;
+  color: var(--primary-green);
+  font-weight: 500;
+  margin-bottom: var(--spacing-xs);
+}
+
+.copyright {
+  font-size: 0.85rem;
+  color: var(--dark-gray);
+  font-weight: 300;
+}
+
+/* ===== ANIMATIONS ===== */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes logoFloat {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+@keyframes pulse {
+  0% {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(1.4);
+    opacity: 0;
+  }
+}
+
+@keyframes loadingProgress {
+  0% {
+    width: 0;
+  }
+  100% {
+    width: 100%;
+  }
+}
+
+/* ===== RESPONSIVE DESIGN ===== */
+/* Large Mobile Devices */
+@media (max-width: 480px) {
+  .brand-name {
+    font-size: 2rem;
+  }
+
+  .tagline {
+    font-size: 0.9rem;
+  }
+
+  .section-title {
+    font-size: 1.3rem;
+  }
+
+  .social-card {
+    padding: var(--spacing-sm);
+  }
+
+  .social-icon {
+    width: 45px;
+    height: 45px;
+    font-size: 1.3rem;
+  }
+
+  .social-info h3 {
+    font-size: 1rem;
+  }
+
+  .social-info p {
+    font-size: 0.85rem;
+  }
+
+  .logo-container {
+    width: 100px;
+    height: 100px;
+  }
+
+  .loader-text h2 {
+    font-size: 1.6rem;
+  }
+}
+
+/* Small Mobile Devices */
+@media (max-width: 360px) {
+  .brand-name {
+    font-size: 1.8rem;
+  }
+
+  .social-card {
+    gap: var(--spacing-sm);
+  }
+
+  .social-icon {
+    width: 40px;
+    height: 40px;
+    font-size: 1.2rem;
+  }
+
+  .container {
+    padding: var(--spacing-md) var(--spacing-sm);
+  }
+}
+
+/* Tablet and Desktop */
+@media (min-width: 768px) {
+  .container {
+    padding: var(--spacing-xl) var(--spacing-lg);
+  }
+
+  .header {
+    padding: var(--spacing-xl) 0;
+  }
+
+  .logo-wrapper {
+    width: 120px;
+    height: 120px;
+  }
+
+  .brand-name {
+    font-size: 3rem;
+  }
+
+  .social-card {
+    padding: var(--spacing-lg);
+    border-radius: var(--radius-lg);
+  }
+
+  .social-icon {
+    width: 60px;
+    height: 60px;
+    font-size: 1.8rem;
+  }
+
+  .social-info h3 {
+    font-size: 1.2rem;
+  }
+
+  .social-info p {
+    font-size: 1rem;
+  }
+}
+
+/* Dark Mode Support (if system prefers dark) */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --light-bg: #1a1a1a;
+    --white: #2a2a2a;
+    --text-dark: #e0e0e0;
+    --dark-gray: #b0b0b0;
+    --medium-gray: #404040;
+  }
+
+  body {
+    background: linear-gradient(135deg, #1a1a1a 0%, #0a3d23 100%);
+  }
+}
+
+/* Reduced Motion Support */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Print Styles */
+@media print {
+  .loader-container {
+    display: none;
+  }
+
+  .main-content {
+    opacity: 1 !important;
+    visibility: visible !important;
+  }
+
+  .social-card {
+    page-break-inside: avoid;
+  }
+}
