@@ -78,11 +78,10 @@ document.addEventListener("DOMContentLoaded", function () {
         const platform = this.classList[1]; // Get the platform class name
         const url = this.href;
 
-        console.log(`🔗 Social link clicked: ${platform}`);
-        console.log(`📍 URL: ${url}`);
-
         // Optional: Add Google Analytics or other tracking here
-        // Example: gtag('event', 'social_click', { 'platform': platform });
+        if (typeof gtag !== "undefined") {
+          gtag("event", "social_click", { platform: platform, url: url });
+        }
       });
     });
   }
@@ -209,11 +208,13 @@ document.addEventListener("DOMContentLoaded", function () {
    * Add PWA-like features - Detect online/offline status
    */
   window.addEventListener("online", () => {
-    console.log("✅ Connection restored");
+    // Connection restored - could show user notification
+    showConnectionStatus(true);
   });
 
   window.addEventListener("offline", () => {
-    console.log("❌ No internet connection");
+    // No internet connection - could show user notification
+    showConnectionStatus(false);
   });
 
   /**
@@ -275,7 +276,8 @@ document.addEventListener("DOMContentLoaded", function () {
   // Initialize everything
   init();
 
-  console.log("🌱 Ecolighting Social Hub Loaded Successfully!");
+  // Mark initialization as complete
+  document.body.setAttribute("data-app-loaded", "true");
 });
 
 /**
